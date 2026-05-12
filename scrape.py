@@ -339,3 +339,41 @@ result = supabase.table("vinyls").insert(rows).execute()
 
 print(f"✅ Inserted {len(rows)} rows into Supabase")
 
+# Python alert examples
+
+# Alert 1: Average price dropped below threshold
+avg_price = df["price_eur"].mean()
+if avg_price < 30.0:
+    print(f"⚠️ ALERT: Average price (€{avg_price:.2f}) dropped below €30!")
+
+# Alert 2: New out-of-stock items detected
+out_of_stock = df[df["availability"] != "Available"]
+if len(out_of_stock) > 0:
+    print(f"⚠️ {len(out_of_stock)} items are out of stock:")
+    for _, row in out_of_stock.iterrows():
+        print(f"   - {row['title']}")
+
+# Alert 3: Price spike detection (compare to previous run)
+import os
+if os.path.exists("my_dataset.csv"):
+    historical = pd.read_csv("my_dataset.csv")
+    prev_avg = historical.groupby("scraped_at")["price_eur"].mean().iloc[-1]
+    change_pct = ((avg_price - prev_avg) / prev_avg) * 100
+    if abs(change_pct) > 10:
+        print(f"⚠️ Price swing detected: {change_pct:+.1f}% change!")
+
+# Alert 4: Send email notification (optional)
+import smtplib
+from email.message import EmailMessage
+
+def send_alert(subject, body):
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = "your_email@gmail.com"
+    msg["To"] = "your_email@gmail.com"
+    msg.set_content(body)
+    # Note: requires an app password for Gmail
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login("your_email@gmail.com", "your_app_password")
+        server.send_message(msg)
+
