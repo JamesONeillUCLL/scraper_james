@@ -185,8 +185,7 @@ else:
 
 print(f"Appended {len(df)} rows — total file now has historical data")
 
-#from google.colab import drive
-#drive.mount('/content/drive')
+
 
 # How many rows and columns?
 
